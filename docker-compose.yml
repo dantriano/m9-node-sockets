@@ -1,0 +1,28 @@
+version: '3'
+services:
+
+  #NODE Service
+  app:
+    image: node:${NODE_V}-${NODE_TAG}
+    container_name: app_${DOCKER_NAME}
+    restart: unless-stopped
+    entrypoint: sh /scripts/init.sh
+    tty: true
+    working_dir: /app
+    volumes:
+      - ${PROJECT_PATH}:/app
+      - ./docker/node/init.sh:/scripts/init.sh
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+      - ${API_PORT}:${API_PORT}
+    networks:
+      - app-network
+
+#Docker Networks
+networks:
+  app-network:
+    driver: bridge
+#Volumes
+volumes:
+  dbdata:
+    driver: local
