@@ -3,7 +3,8 @@ const port = process.env.SERVER_PORT || 6000;
 var express = require("express"),
   app = express(),
   server = require("http").createServer(app),
-  path = require("path");
+  path = require("path"),
+   io = require("socket.io")(server);
 
 server.listen(port, (err, res) => {
   if (err) console.log(`ERROR: Connecting APP ${err}`);
@@ -23,7 +24,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
-
+io.on("connection",(socket)=>{
+  console.log("Socket conectado");
+  //Este socket tendrá un atributo user con valor Pedro,
+  //desde la primera conexión hasta que se cierre el socket 
+  if(!socket.user) socket.user="Pedro";
+  socket.on("default",(data)=>{
+    console.log(data);
+    socket.broadcast.emit("toClient",data)
+  })
+})
 
 // Define routes using URL path
 app.use("/", socketsRouter);

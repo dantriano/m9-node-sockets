@@ -1,15 +1,16 @@
 $(document).ready(function () {
   //Inicializa socket con IO
-  //const socket =
+  const socket = io();
 
   $("#send").submit(function (e) {
     e.preventDefault();
     var msg = $("#msg").val();
-    //Acciones a realizar cuando se pulsa el boton submit
-   
+    $("#chatBox").append(`<p>${msg}<p>`);
+    var toSend = { user: 1, text: msg };
+    socket.emit("default", toSend);
   });
 
-  //We listen on "newMsg" and react if we detect 
-  //Acciones a realizar cuando se detecta actividad en el canal newMsg
-
+  socket.on("toClient", (data) => {
+    console.log(data);
+  });
 });
